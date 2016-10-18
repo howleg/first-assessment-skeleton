@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashSet;
+
+import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,11 @@ public class ClientHandler implements Runnable {
 	private Logger log = LoggerFactory.getLogger(ClientHandler.class);
 
 	private Socket socket;
+	
+	
+	public static HashSet<String> clientHS = new HashSet<String>();
+	
+	
 
 	public ClientHandler(Socket socket) {
 		super();
@@ -35,19 +43,51 @@ public class ClientHandler implements Runnable {
 				Message message = mapper.readValue(raw, Message.class);
 
 				switch (message.getCommand()) {
-					case "connect":
-						log.info("user <{}> connected", message.getUsername());
-						break;
-					case "disconnect":
-						log.info("user <{}> disconnected", message.getUsername());
-						this.socket.close();
-						break;
-					case "echo":
-						log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
-						String response = mapper.writeValueAsString(message);
-						writer.write(response);
-						writer.flush();
-						break;
+				case "connect":
+					log.info("user <{}> connected", message.getUsername());
+					
+					//add client username to hashset
+					clientHS.add(message.getUsername());			
+					
+					break;
+				case "disconnect":
+					log.info("user <{}> disconnected", message.getUsername());
+					
+					//deletes client from hashset
+					clientHS.remove(message.getUsername());
+					
+					this.socket.close();
+					break;
+				case "echo":
+					log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
+					String response = mapper.writeValueAsString(message);
+					writer.write(response);
+					writer.flush();
+					break;
+				case "users":
+					log.info("user <{}> wants list of currently connected users", message.getUsername());
+					
+					String clientUsernames = "";
+					for(String clientName : clientHS ){
+						clientUsernames += clientName;
+					}
+					
+					message.setContents(clientUsernames);
+
+					
+//					users:
+//						`${timestamp}: currently connected users:`
+//						(repeated)
+//						`<${username}>`
+//					
+//					need to maker format client usernames like ^
+					
+					
+					String clientUsernamesResponse = mapper.writeValueAsString(message);
+					
+					writer.write(clientUsernamesResponse);
+					writer.flush();
+					break;
 				}
 			}
 
