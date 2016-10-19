@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,11 +23,20 @@ public class ClientManager {
 
 	public synchronized static void removeClient(String username) {
 
-		for (ClientSpec x : clientSpecs) {
-			if (username.equals(x.getName())) {
-				clientSpecs.remove(x);
-			}
+		//Dedicated to Michael *bows down
+		Iterator<ClientSpec> iterator = clientSpecs.iterator();  //Look more closely how this works. #magic
+		
+		while(iterator.hasNext())
+		{
+			ClientSpec x = iterator.next();
+			if(username.equals(x.getName())) iterator.remove();
 		}
+		
+//		for (ClientSpec x : clientSpecs) {
+//			if (username.equals(x.getName())) {
+//				clientSpecs.remove(x);
+//			}
+//		}
 	}
 
 	public synchronized static void listUsers(Message message, Socket socket) throws IOException {
@@ -38,9 +48,9 @@ public class ClientManager {
 
 		String users = "";
 		for (ClientSpec x : clientSpecs) {
-			users += "<" + x.getName() + ">\n";
+			users += "   <" + x.getName() + ">\n";
 		}
-		message.setContents(String.format("{%s}: currently connected users:\n %s", timeStamp, users));
+		message.setContents(String.format("{%s}: currently connected users:\n%s", timeStamp, users));
 
 		for (ClientSpec x : clientSpecs) {
 			if (x.getSocket() == socket)
