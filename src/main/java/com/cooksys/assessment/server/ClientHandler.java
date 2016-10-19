@@ -38,7 +38,13 @@ public class ClientHandler implements Runnable {
 				String raw = reader.readLine();
 				Message message = mapper.readValue(raw, Message.class);
 
-				switch (message.getCommand()) {
+				String command = message.getCommand();
+
+				if (command.charAt(0) == '@') {
+					ClientManager.sendMsgToUser(command, message);
+				}
+
+				switch (command) {
 				case "connect":
 					log.info("user <{}> connected", message.getUsername());
 					ClientManager.addClient(new ClientSpec(message.getUsername(), socket));
@@ -65,6 +71,11 @@ public class ClientHandler implements Runnable {
 
 					ClientManager.broadcastToAll(message);
 					break;
+
+//				case "@fish":
+//					log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
+//					ClientManager.sendMessage(message, new ClientSpec(message.getUsername(), this.socket));
+//					break;
 
 				}// end switch
 

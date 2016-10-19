@@ -55,5 +55,22 @@ public class ClientManager {
 			sendMessage(message, x);
 		}
 	}
+	
+
+	public static synchronized void sendMsgToUser(String cmd, Message msg) throws IOException {
+		
+		String rxUser = cmd.substring(1);
+		
+		for (ClientSpec x : clientSpecs) {
+			
+			if( x.getName().equals(rxUser))
+			{
+				sendMessage(msg, x);
+			}
+			
+		}
+		
+		
+	}
 
 }// end of class

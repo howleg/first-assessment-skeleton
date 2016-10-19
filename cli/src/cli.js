@@ -44,8 +44,11 @@ cli
       } 
     
     else if (command === 'broadcast') {
-    	server.write(new Message({ username, command, contents }).toJSON() + '\n')
-    	
+    	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
+    }
+    
+    else if (command.charAt(0) === '@') {
+    	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
     }
     
     
