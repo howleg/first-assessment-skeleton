@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cooksys.assessment.model.ClientManager;
 import com.cooksys.assessment.server.Server;
 
 public class Main {
@@ -20,6 +21,10 @@ public class Main {
 		Server server = new Server(8080, executor);
 		
 		Future<?> done = executor.submit(server);
+		
+		///////////////////////////////////////////////////
+		ClientManager clientManager = new ClientManager();
+		///////////////////////////////////////////////////
 		
 		try {
 			done.get();
