@@ -21,22 +21,43 @@ public class ClientManager {
 		}
 	}
 
+	public synchronized static void alert(Message message, boolean connected) throws IOException {
+		String timeStamp = getTimeStamp();
+		String msg = ""
+		// ${timestamp}: <${username}> has connected
+		// ${timestamp}: <${username}> has disconnected`
+		;
+		if (connected)
+			msg = String.format("{%s}: <%s> has connected", timeStamp, message.getUsername());
+		else
+			msg = String.format("{%s}: <%s> has disconnected", timeStamp, message.getUsername());
+
+		message.setContents(msg);
+
+		for (ClientSpec x : clientSpecs) {
+			sendMessage(message, x);
+		}
+	}
+
 	public synchronized static void removeClient(String username) {
 
-		//Dedicated to Michael *bows down
-		Iterator<ClientSpec> iterator = clientSpecs.iterator();  //Look more closely how this works. #magic
-		
-		while(iterator.hasNext())
-		{
+		// Dedicated to Michael *bows down
+		Iterator<ClientSpec> iterator = clientSpecs.iterator(); // Look more
+																// closely how
+																// this works.
+																// #magic
+
+		while (iterator.hasNext()) {
 			ClientSpec x = iterator.next();
-			if(username.equals(x.getName())) iterator.remove();
+			if (username.equals(x.getName()))
+				iterator.remove();
 		}
-		
-//		for (ClientSpec x : clientSpecs) {
-//			if (username.equals(x.getName())) {
-//				clientSpecs.remove(x);
-//			}
-//		}
+
+		// for (ClientSpec x : clientSpecs) {
+		// if (username.equals(x.getName())) {
+		// clientSpecs.remove(x);
+		// }
+		// }
 	}
 
 	public synchronized static void listUsers(Message message, Socket socket) throws IOException {

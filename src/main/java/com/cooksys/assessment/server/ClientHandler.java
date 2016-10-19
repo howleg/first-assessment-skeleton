@@ -49,10 +49,12 @@ public class ClientHandler implements Runnable {
 				case "connect":
 					log.info("user <{}> connected", message.getUsername());
 					ClientManager.addClient(new ClientSpec(message.getUsername(), socket));
+					ClientManager.alert(message,true);
 					break;
 				case "disconnect":
 					log.info("user <{}> disconnected", message.getUsername());
 					ClientManager.removeClient(message.getUsername());
+					ClientManager.alert(message,false);
 					this.socket.close();
 					break;
 				case "echo":
