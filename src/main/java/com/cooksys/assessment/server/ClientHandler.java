@@ -60,9 +60,7 @@ public class ClientHandler implements Runnable {
 					break;
 				case "echo":
 					log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
-					String response = mapper.writeValueAsString(message);
-					writer.write(response);
-					writer.flush();
+					ClientManager.sendMessage(message, new ClientSpec(message.getUsername(),this.socket));
 					break;
 				case "users":
 					log.info("user <{}> wants list of currently connected users", message.getUsername());
