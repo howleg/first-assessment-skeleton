@@ -29,12 +29,24 @@ public class ClientManager {
 		}
 	}
 
-	public synchronized static String listUsers() {
+	public synchronized static void listUsers(Message message, Socket socket) throws IOException {
+		String timeStamp = getTimeStamp();
+
+		// `${timestamp}: currently connected users:`
+		// (repeated)
+		// `<${username}>`
+
 		String users = "";
-		for (ClientSpec cs : clientSpecs) {
-			users = users + cs.getName();
+		for (ClientSpec x : clientSpecs) {
+			users += "<" + x.getName() + ">\n";
 		}
-		return users;
+		message.setContents(String.format("{%s}: currently connected users:\n %s", timeStamp, users));
+
+		for (ClientSpec x : clientSpecs) {
+			if (x.getSocket() == socket)
+				sendMessage(message, x);
+		}
+
 	}
 
 	public static void sendMessage(Message message, ClientSpec clientSpec) throws IOException {
@@ -51,8 +63,8 @@ public class ClientManager {
 
 	public static synchronized void broadcastToAll(Message message) throws IOException {
 
-		String timestamp = getTimeStamp();
-		String msg = String.format("%s <%s> (all): %s", timestamp, message.getUsername(), message.getContents());
+		String timeStamp = getTimeStamp();
+		String msg = String.format("%s <%s> (all): %s", timeStamp, message.getUsername(), message.getContents());
 
 		// `${timestamp} <${username}> (all): ${contents}`
 
@@ -66,11 +78,11 @@ public class ClientManager {
 
 	public static synchronized void sendMsgToUser(String cmd, Message message) throws IOException {
 
-		String timestamp = getTimeStamp();
-		String msg = String.format("%s <%s> (whisper) %s", timestamp, message.getUsername(), message.getContents());
+		String timeStamp = getTimeStamp();
+		String msg = String.format("%s <%s> (whisper) %s", timeStamp, message.getUsername(), message.getContents());
 
 		// ${timestamp} <${username}> (whisper): ${contents}
-		
+
 		message.setContents(msg);
 
 		String rxUser = cmd.substring(1);

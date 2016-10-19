@@ -41,6 +41,7 @@ public class ClientHandler implements Runnable {
 				String command = message.getCommand();
 
 				if (command.charAt(0) == '@') {
+					log.info("user <{}> wants to send a message to <{}> ", message.getUsername(), command.substring(1));
 					ClientManager.sendMsgToUser(command, message);
 				}
 
@@ -60,9 +61,7 @@ public class ClientHandler implements Runnable {
 					break;
 				case "users":
 					log.info("user <{}> wants list of currently connected users", message.getUsername());
-					String users = ClientManager.listUsers();
-					message.setContents(users);
-					ClientManager.sendMessage(message, new ClientSpec(message.getUsername(), this.socket));
+					ClientManager.listUsers(message, this.socket);
 					break;
 
 				case "broadcast":
@@ -71,7 +70,6 @@ public class ClientHandler implements Runnable {
 
 					ClientManager.broadcastToAll(message);
 					break;
-
 
 				}// end switch
 
