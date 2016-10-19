@@ -49,28 +49,50 @@ public class ClientManager {
 		writer.flush();
 	}
 
-	public static void broadcastToAll(Message message) throws IOException {
+	public static synchronized void broadcastToAll(Message message) throws IOException {
+		
+		
+		
+		String timestamp = getTimeStamp();
+		String msg = String.format("%s <%s> (all): %s", timestamp, message.getUsername(), message.getContents());
+		
+		message.setContents(msg);
+		
+		
+		for (ClientSpec x : clientSpecs) {
+			sendMessage(message, x);		
+		}
+		
+		
+		//String s = String.format("%l <%s> (all)   ", milli, x.getName(), message.getContents())
+		
+		
+//		`${timestamp} <${username}> (all): ${contents}`
+		
+	}
+
+	public static synchronized void sendMsgToUser(String cmd, Message msg) throws IOException {
+
+		String rxUser = cmd.substring(1);
 
 		for (ClientSpec x : clientSpecs) {
-			sendMessage(message, x);
+
+			if (x.getName().equals(rxUser)) {
+				sendMessage(msg, x);
+			}
 		}
 	}
 	
-
-	public static synchronized void sendMsgToUser(String cmd, Message msg) throws IOException {
+	private static String getTimeStamp()
+	{
+		long millis = System.currentTimeMillis();
+		long second = (millis / 1000) % 60;
+		long minute = (millis / (1000 * 60)) % 60;
+		long hour = (millis / (1000 * 60 * 60)) % 24;
+		String time = String.format("%02d:%02d:%02d:%d", hour, minute, second, millis);
+		//http://stackoverflow.com/questions/4142313/java-convert-milliseconds-to-time-format
 		
-		String rxUser = cmd.substring(1);
-		
-		for (ClientSpec x : clientSpecs) {
-			
-			if( x.getName().equals(rxUser))
-			{
-				sendMessage(msg, x);
-			}
-			
-		}
-		
-		
+		return time;
 	}
 
 }// end of class

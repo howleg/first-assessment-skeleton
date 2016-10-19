@@ -72,10 +72,6 @@ public class ClientHandler implements Runnable {
 					ClientManager.broadcastToAll(message);
 					break;
 
-//				case "@fish":
-//					log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
-//					ClientManager.sendMessage(message, new ClientSpec(message.getUsername(), this.socket));
-//					break;
 
 				}// end switch
 
