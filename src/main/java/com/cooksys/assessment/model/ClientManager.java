@@ -50,48 +50,47 @@ public class ClientManager {
 	}
 
 	public static synchronized void broadcastToAll(Message message) throws IOException {
-		
-		
-		
+
 		String timestamp = getTimeStamp();
 		String msg = String.format("%s <%s> (all): %s", timestamp, message.getUsername(), message.getContents());
-		
+
+		// `${timestamp} <${username}> (all): ${contents}`
+
 		message.setContents(msg);
-		
-		
+
 		for (ClientSpec x : clientSpecs) {
-			sendMessage(message, x);		
+			sendMessage(message, x);
 		}
-		
-		
-		//String s = String.format("%l <%s> (all)   ", milli, x.getName(), message.getContents())
-		
-		
-//		`${timestamp} <${username}> (all): ${contents}`
-		
+
 	}
 
-	public static synchronized void sendMsgToUser(String cmd, Message msg) throws IOException {
+	public static synchronized void sendMsgToUser(String cmd, Message message) throws IOException {
+
+		String timestamp = getTimeStamp();
+		String msg = String.format("%s <%s> (whisper) %s", timestamp, message.getUsername(), message.getContents());
+
+		// ${timestamp} <${username}> (whisper): ${contents}
+		
+		message.setContents(msg);
 
 		String rxUser = cmd.substring(1);
 
 		for (ClientSpec x : clientSpecs) {
 
 			if (x.getName().equals(rxUser)) {
-				sendMessage(msg, x);
+				sendMessage(message, x);
 			}
 		}
 	}
-	
-	private static String getTimeStamp()
-	{
+
+	private static String getTimeStamp() {
 		long millis = System.currentTimeMillis();
 		long second = (millis / 1000) % 60;
 		long minute = (millis / (1000 * 60)) % 60;
 		long hour = (millis / (1000 * 60 * 60)) % 24;
 		String time = String.format("%02d:%02d:%02d:%d", hour, minute, second, millis);
-		//http://stackoverflow.com/questions/4142313/java-convert-milliseconds-to-time-format
-		
+		// http://stackoverflow.com/questions/4142313/java-convert-milliseconds-to-time-format
+
 		return time;
 	}
 
