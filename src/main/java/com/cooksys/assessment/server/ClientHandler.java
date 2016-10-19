@@ -41,51 +41,27 @@ public class ClientHandler implements Runnable {
 				switch (message.getCommand()) {
 				case "connect":
 					log.info("user <{}> connected", message.getUsername());
-
-					// add client username to hashset
-					// clientHM.put(message.getUsername(), socket);
-
-					ClientManager.addClient(new ClientSpec(message.getUsername(), socket));
-
+					ClientManager.addClient(new ClientSpec(message.getUsername(), socket));				
 					break;
 				case "disconnect":
 					log.info("user <{}> disconnected", message.getUsername());
-
-					// deletes client from hashset
-					// clientHM.remove(message.getUsername());
-
 					ClientManager.removeClient(new ClientSpec(message.getUsername(), socket));
-
 					this.socket.close();
 					break;
 				case "echo":
 					log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
-					ClientManager.sendMessage(message, new ClientSpec(message.getUsername(),this.socket));
+					ClientManager.sendMessage(message, new ClientSpec(message.getUsername(), this.socket));
 					break;
 				case "users":
 					log.info("user <{}> wants list of currently connected users", message.getUsername());
-					// String clientUsernames = "";
-					// for(String clientName : clientHS ){
-					// clientUsernames += clientName;
-					// }
-					// message.setContents(clientUsernames);
-					//// users:
-					//// `${timestamp}: currently connected users:`
-					//// (repeated)
-					//// `<${username}>`
-					////
-					//// need to maker format client usernames like ^
-					//
 					String users = ClientManager.listUsers();
 					message.setContents(users);
 					ClientManager.sendMessage(message, new ClientSpec(message.getUsername(), this.socket));
-
 					break;
 
 				case "broadcast":
 					log.info("user <{}> is broadcasting <{}> to all connected users", message.getUsername(),
 							message.getContents());
-
 					ClientManager.broadcastToAll(message);
 					break;
 
