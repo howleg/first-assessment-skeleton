@@ -30,7 +30,7 @@ cli
     })
   })
   .action(function (input, callback) {
-    const [ command, ...rest ] = words(input) //no idea the second param. played with repel on lodash and it works so fuck it
+    const [ command, ...rest ] = words(input, /[^, ]+/g) //no idea the second param. played with repel on lodash and it works so fuck it
     const contents = rest.join(' ')
 
     if (command === 'disconnect') {
@@ -44,7 +44,6 @@ cli
       } 
     
     else if (command === 'broadcast') {
-    	//cli.log(cli.chalk['red'](l))
     	server.write(new Message({ username, command, contents }).toJSON() + '\n')
     	
     }

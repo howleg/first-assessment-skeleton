@@ -20,9 +20,12 @@ public class ClientManager {
 		}
 	}
 
-	public synchronized static void removeClient(ClientSpec clientSpec) {
-		if (clientSpecs.contains(clientSpec)) {
-			clientSpecs.remove(clientSpec);
+	public synchronized static void removeClient(String username) {
+
+		for (ClientSpec x : clientSpecs) {
+			if (username.equals(x.getName())) {
+				clientSpecs.remove(x);
+			}
 		}
 	}
 

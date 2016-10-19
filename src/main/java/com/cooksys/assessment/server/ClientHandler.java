@@ -41,11 +41,11 @@ public class ClientHandler implements Runnable {
 				switch (message.getCommand()) {
 				case "connect":
 					log.info("user <{}> connected", message.getUsername());
-					ClientManager.addClient(new ClientSpec(message.getUsername(), socket));				
+					ClientManager.addClient(new ClientSpec(message.getUsername(), socket));
 					break;
 				case "disconnect":
 					log.info("user <{}> disconnected", message.getUsername());
-					ClientManager.removeClient(new ClientSpec(message.getUsername(), socket));
+					ClientManager.removeClient(message.getUsername());
 					this.socket.close();
 					break;
 				case "echo":
@@ -62,6 +62,7 @@ public class ClientHandler implements Runnable {
 				case "broadcast":
 					log.info("user <{}> is broadcasting <{}> to all connected users", message.getUsername(),
 							message.getContents());
+
 					ClientManager.broadcastToAll(message);
 					break;
 
