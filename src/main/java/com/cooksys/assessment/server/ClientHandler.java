@@ -40,10 +40,10 @@ public class ClientHandler implements Runnable {
 
 				String command = message.getCommand();
 
-				if (command.charAt(0) == '@') {
-					log.info("user <{}> wants to send a message to <{}> ", message.getUsername(), command.substring(1));
-					ClientManager.sendMsgToUser(command, message);
-				}
+//				if (command.charAt(0) == '@') {
+//					log.info("user <{}> wants to send a message to <{}> ", message.getUsername(), command.substring(1));
+//					ClientManager.sendMsgToUser(command, message);
+//				}
 
 				switch (command) {
 				case "connect":
@@ -77,6 +77,11 @@ public class ClientHandler implements Runnable {
 					break;
 
 				}// end switch
+				
+				if (command.charAt(0) == '@') {
+					log.info("user <{}> wants to send a message to <{}> ", message.getUsername(), command.substring(1));
+					ClientManager.sendMsgToUser(command, message);
+				}
 
 			} // end while
 

@@ -57,7 +57,7 @@ cli
     	break;
     	
 
-      }//end switch
+      }// end switch
       
       
     })
@@ -67,10 +67,14 @@ cli
     })
   })
   .action(function (input, callback) {
-    const [ command, ...rest ] = words(input, /[^, ]+/g) //no idea the second param. played with repel on lodash and it works so fuck it
+    const [ command, ...rest ] = words(input, /[^, ]+/g) // no idea the
+															// second param.
+															// played with repel
+															// on lodash and it
+															// works so fuck it
     const contents = rest.join(' ')
 
-    let cmd = command //command is readonly?
+    let cmd = command // command is readonly?
          	
     
     if (cmd === 'disconnect') {
@@ -96,10 +100,10 @@ cli
     else if (cmd === 'broadcast') {
     	prevCmd = command;
     	
-    	console.log('2nd broadcast')
+    	console.log('1st broadcast')
    	 	console.log(username)
-   	 	console.log(prevCmd)
-   	 	console.log(newContents)
+   	 	console.log(command)
+   	 	console.log(contents)
     	
     	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
     }
@@ -108,46 +112,38 @@ cli
     	prevCmd = command;
     	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
     }
-       //undefined, null idk. f u javascript! ughhhh check both
-    else if(prevCmd != undefined || prevCmd != null){
+
+    else if(prevCmd != undefined)
+    {
+    	
+    	// //////////////////////////////
+    	const newContents = command + ' ' + contents
+    	// ///////////////////////////////
     	
     	
-    	//screws up contents, gotta make a new one
-    	let newContents = command + ' ' + contents
-    	
-    	console.log(prevCmd)
-    	console.log(newContents)
-          
-         if (prevCmd === 'echo') {
-        	 console.log('2nd echo')
-        	 console.log(username)
-        	 console.log(prevCmd)
-        	 console.log(newContents)
+    	  if (prevCmd === 'echo') {
           server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')
         } 
         
         else if (prevCmd === 'users') {
-            server.write(new Message({ username, command, contents }).toJSON() + '\n')
+            server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')
           } 
-        
-        else if (prevCmd === 'broadcast') {
+        else if (prevCmd === 'broadcast') {	
         	console.log('2nd broadcast')
        	 	console.log(username)
        	 	console.log(prevCmd)
-       	 	console.log(newContents)
+       	 	console.log(newContents)  	
         	server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')	
         }
-        
         else if (prevCmd.charAt(0) === '@') {
-        	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
+        	server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')	
         }
     	
-    	
-    }
+    } // inner if/elseIf
     
     else {
       this.log(`Command <${command}> was not recognized`)
-      //cli.chalk['green']
+      // cli.chalk['green']
     }
     
 
