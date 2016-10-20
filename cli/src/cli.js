@@ -8,8 +8,7 @@ export const cli = vorpal()
 let username
 let server
 
-var prevCmd
-var tryAgain
+let prevCmd
 
 cli
   .delimiter(cli.chalk['yellow']('ftd~$'))
@@ -72,14 +71,7 @@ cli
     const contents = rest.join(' ')
 
     let cmd = command //command is readonly?
-        
-    do{
-    	console.log("in do")
-    	console.log("prev cmd:" + prevCmd)
-    	console.log("cmd: " + cmd)
-    	console.log("tryAgain:" + tryAgain)
-    	tryAgain = false
-    	
+         	
     
     if (cmd === 'disconnect') {
     	prevCmd = command;
@@ -87,6 +79,12 @@ cli
       
     } else if (cmd === 'echo') {
     	prevCmd = command;
+    	
+    	console.log('1st echo')
+   	 	console.log(username)
+   	 	console.log(command)
+   	 	console.log(contents)
+    	
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } 
     
@@ -97,6 +95,12 @@ cli
     
     else if (cmd === 'broadcast') {
     	prevCmd = command;
+    	
+    	console.log('2nd broadcast')
+   	 	console.log(username)
+   	 	console.log(prevCmd)
+   	 	console.log(newContents)
+    	
     	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
     }
     
@@ -106,9 +110,39 @@ cli
     }
        //undefined, null idk. f u javascript! ughhhh check both
     else if(prevCmd != undefined || prevCmd != null){
-    	cmd = prevCmd   //need to loop back over and check again
-    	console.log("inside else if prev != null")
-    	tryAgain = true
+    	
+    	
+    	//screws up contents, gotta make a new one
+    	let newContents = command + ' ' + contents
+    	
+    	console.log(prevCmd)
+    	console.log(newContents)
+          
+         if (prevCmd === 'echo') {
+        	 console.log('2nd echo')
+        	 console.log(username)
+        	 console.log(prevCmd)
+        	 console.log(newContents)
+          server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')
+        } 
+        
+        else if (prevCmd === 'users') {
+            server.write(new Message({ username, command, contents }).toJSON() + '\n')
+          } 
+        
+        else if (prevCmd === 'broadcast') {
+        	console.log('2nd broadcast')
+       	 	console.log(username)
+       	 	console.log(prevCmd)
+       	 	console.log(newContents)
+        	server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')	
+        }
+        
+        else if (prevCmd.charAt(0) === '@') {
+        	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
+        }
+    	
+    	
     }
     
     else {
@@ -116,7 +150,6 @@ cli
       //cli.chalk['green']
     }
     
-    } while(tryAgain)
 
     callback()
   })
