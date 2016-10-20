@@ -8,6 +8,9 @@ export const cli = vorpal()
 let username
 let server
 
+var prevCmd
+var tryAgain
+
 cli
   .delimiter(cli.chalk['yellow']('ftd~$'))
 
@@ -25,7 +28,13 @@ cli
     	
       var msg= Message.fromJSON(buffer)
       
-      //str.charAt(index)
+      
+      if(msg.command === '')
+    	  {
+    	  this.log('no command')
+    	  }
+      
+      
       if(msg.command.charAt(0) === '@')
     	  {
     	  this.log(cli.chalk['magenta'](msg.toString()))
@@ -62,29 +71,52 @@ cli
     const [ command, ...rest ] = words(input, /[^, ]+/g) //no idea the second param. played with repel on lodash and it works so fuck it
     const contents = rest.join(' ')
 
-    if (command === 'disconnect') {
+    let cmd = command //command is readonly?
+        
+    do{
+    	console.log("in do")
+    	console.log("prev cmd:" + prevCmd)
+    	console.log("cmd: " + cmd)
+    	console.log("tryAgain:" + tryAgain)
+    	tryAgain = false
+    	
+    
+    if (cmd === 'disconnect') {
+    	prevCmd = command;
       server.end(new Message({ username, command }).toJSON() + '\n')
-    } else if (command === 'echo') {
+      
+    } else if (cmd === 'echo') {
+    	prevCmd = command;
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } 
     
-    else if (command === 'users') {
+    else if (cmd === 'users') {
+    	prevCmd = command;
         server.write(new Message({ username, command, contents }).toJSON() + '\n')
       } 
     
-    else if (command === 'broadcast') {
+    else if (cmd === 'broadcast') {
+    	prevCmd = command;
     	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
     }
     
-    else if (command.charAt(0) === '@') {
+    else if (cmd.charAt(0) === '@') {
+    	prevCmd = command;
     	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
     }
-    
+       //undefined, null idk. f u javascript! ughhhh check both
+    else if(prevCmd != undefined || prevCmd != null){
+    	cmd = prevCmd   //need to loop back over and check again
+    	console.log("inside else if prev != null")
+    	tryAgain = true
+    }
     
     else {
       this.log(`Command <${command}> was not recognized`)
       //cli.chalk['green']
     }
+    
+    } while(tryAgain)
 
     callback()
   })
