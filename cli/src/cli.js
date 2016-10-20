@@ -39,10 +39,13 @@ cli
     	this.log(cli.chalk['bgRed'](msg.toString()))
         break;
     case 'broadcast':
-    	this.log(cli.chalk['bgYellow'](msg.toString()))
+    	this.log(cli.chalk['bgGreen'](msg.toString()))
     	break;
     case 'echo':
-    	this.log(cli.chalk['cyan'] (msg.toString()))
+    	this.log(cli.chalk['green'] (msg.toString()))
+    	break;
+    case 'users':
+    	this.log(cli.chalk['blue'] (msg.toString()))
     	break;
     	
 
