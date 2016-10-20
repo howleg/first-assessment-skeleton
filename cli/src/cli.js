@@ -14,11 +14,22 @@ cli
   .delimiter(cli.chalk['yellow']('ftd~$'))
 
 cli
-  .mode('connect <username>')
+  .mode('connect <username> [h] [p]')
+  
   .delimiter(cli.chalk['green']('connected>'))
   .init(function (args, callback) {
-    username = args.username
-    server = connect({ host: 'localhost', port: 8080 }, () => {
+	  
+	  let username = args.username
+      let port = 8080
+      let host = 'localhost'
+    	  
+    	  
+      if (args.options.port != undefined && args.options.host != undefined) {
+          host = args.options.h
+          port = args.options.p
+      }
+	  
+    server = connect({ host: host, port: port }, () => {
       server.write(new Message({ username, command: 'connect' }).toJSON() + '\n')
       callback()
     })
@@ -82,13 +93,7 @@ cli
       server.end(new Message({ username, command }).toJSON() + '\n')
       
     } else if (cmd === 'echo') {
-    	prevCmd = command;
-    	
-    	console.log('1st echo')
-   	 	console.log(username)
-   	 	console.log(command)
-   	 	console.log(contents)
-    	
+    	prevCmd = command;	
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } 
     
@@ -98,13 +103,7 @@ cli
       } 
     
     else if (cmd === 'broadcast') {
-    	prevCmd = command;
-    	
-    	console.log('1st broadcast')
-   	 	console.log(username)
-   	 	console.log(command)
-   	 	console.log(contents)
-    	
+    	prevCmd = command;	
     	server.write(new Message({ username, command, contents }).toJSON() + '\n')	
     }
     
