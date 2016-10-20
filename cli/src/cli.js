@@ -22,7 +22,33 @@ cli
     })
 
     server.on('data', (buffer) => {
-      this.log(Message.fromJSON(buffer).toString())
+    	
+      var msg= Message.fromJSON(buffer)
+      
+      //str.charAt(index)
+      if(msg.command.charAt(0) === '@')
+    	  {
+    	  this.log(cli.chalk['magenta'](msg.toString()))
+    	  }
+      
+      switch(msg.command) {
+    case 'connect':
+    	this.log(cli.chalk['bgRed'](msg.toString()))
+        break;
+    case 'disconnect':
+    	this.log(cli.chalk['bgRed'](msg.toString()))
+        break;
+    case 'broadcast':
+    	this.log(cli.chalk['bgYellow'](msg.toString()))
+    	break;
+    case 'echo':
+    	this.log(cli.chalk['cyan'] (msg.toString()))
+    	break;
+    	
+
+      }//end switch
+      
+      
     })
 
     server.on('end', () => {
@@ -54,6 +80,7 @@ cli
     
     else {
       this.log(`Command <${command}> was not recognized`)
+      //cli.chalk['green']
     }
 
     callback()

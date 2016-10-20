@@ -59,7 +59,10 @@ public class ClientHandler implements Runnable {
 					break;
 				case "echo":
 					log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
-					ClientManager.sendMessage(message, new ClientSpec(message.getUsername(), this.socket));
+					//ClientManager.sendMessage(message, new ClientSpec(message.getUsername(), this.socket));
+					
+					ClientManager.echo(message,socket);
+					
 					break;
 				case "users":
 					log.info("user <{}> wants list of currently connected users", message.getUsername());

@@ -79,8 +79,24 @@ public class ClientManager {
 		}
 
 	}
+	
+	public static synchronized void echo(Message message, Socket socket) throws IOException{
+		
+		String timeStamp = getTimeStamp();
+		
+		//`${timestamp} <${username}> (echo): ${contents}`
+		String msg = message.getContents();
+		
+		message.setContents(String.format("{%s} <%s> (echo): {%s}", timeStamp,message.getUsername(),msg));
+		
+		for(ClientSpec x: clientSpecs){
+			if(x.getSocket() == socket) 
+				sendMessage(message,x);
+		}
+		
+	}
 
-	public static void sendMessage(Message message, ClientSpec clientSpec) throws IOException {
+	public static synchronized void sendMessage(Message message, ClientSpec clientSpec) throws IOException {
 		/////// below holds magic. copied from original clientHandler
 		/////// *** take time to understand
 		/////// Probably should create a overload because making clientSpec
