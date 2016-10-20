@@ -122,21 +122,16 @@ cli
     	
     	
     	  if (prevCmd === 'echo') {
-          server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')
-        } 
-        
+            server.write(new Message({ username, command:prevCmd, contents:newContents }).toJSON() + '\n')
+        }   
         else if (prevCmd === 'users') {
-            server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')
+            server.write(new Message({ username, command:prevCmd, contents:newContents }).toJSON() + '\n')
           } 
-        else if (prevCmd === 'broadcast') {	
-        	console.log('2nd broadcast')
-       	 	console.log(username)
-       	 	console.log(prevCmd)
-       	 	console.log(newContents)  	
-        	server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')	
+        else if (prevCmd === 'broadcast') {	 	
+        	server.write(new Message({ username, command:prevCmd, contents:newContents }).toJSON() + '\n')	
         }
         else if (prevCmd.charAt(0) === '@') {
-        	server.write(new Message({ username, prevCmd, newContents }).toJSON() + '\n')	
+        	server.write(new Message({ username, command:prevCmd, contents:newContents }).toJSON() + '\n')	
         }
     	
     } // inner if/elseIf
