@@ -23,10 +23,9 @@ public class ClientManager {
 
 	public synchronized static void alert(Message message, boolean connected) throws IOException {
 		String timeStamp = getTimeStamp();
-		String msg = ""
+		String msg = "";
 		// ${timestamp}: <${username}> has connected
 		// ${timestamp}: <${username}> has disconnected`
-		;
 		if (connected)
 			msg = String.format("{%s}: <%s> has connected", timeStamp, message.getUsername());
 		else
@@ -79,21 +78,21 @@ public class ClientManager {
 		}
 
 	}
-	
-	public static synchronized void echo(Message message, Socket socket) throws IOException{
-		
+
+	public static synchronized void echo(Message message, Socket socket) throws IOException {
+
 		String timeStamp = getTimeStamp();
-		
-		//`${timestamp} <${username}> (echo): ${contents}`
+
+		// `${timestamp} <${username}> (echo): ${contents}`
 		String msg = message.getContents();
-		
-		message.setContents(String.format("{%s} <%s> (echo): {%s}", timeStamp,message.getUsername(),msg));
-		
-		for(ClientSpec x: clientSpecs){
-			if(x.getSocket() == socket) 
-				sendMessage(message,x);
+
+		message.setContents(String.format("{%s} <%s> (echo): {%s}", timeStamp, message.getUsername(), msg));
+
+		for (ClientSpec x : clientSpecs) {
+			if (x.getSocket() == socket)
+				sendMessage(message, x);
 		}
-		
+
 	}
 
 	public static synchronized void sendMessage(Message message, ClientSpec clientSpec) throws IOException {
@@ -142,7 +141,7 @@ public class ClientManager {
 		}
 	}
 
-	private static String getTimeStamp() {
+	private static synchronized String getTimeStamp() {
 		long millis = System.currentTimeMillis();
 		long second = (millis / 1000) % 60;
 		long minute = (millis / (1000 * 60)) % 60;

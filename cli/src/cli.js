@@ -29,7 +29,6 @@ cli
           port = args.options.p
       }
 	  
-	  console.log(username)
 	  
     server = connect({ host: host, port: port }, () => {
       server.write(new Message({username, command: 'connect' }).toJSON() + '\n')
@@ -68,11 +67,8 @@ cli
     case 'users':
     	this.log(cli.chalk['blue'] (msg.toString()))
     	break;
-    	
-
       }// end switch
-      
-      
+ 
     })
 
     server.on('end', () => {
@@ -80,15 +76,13 @@ cli
     })
   })
   .action(function (input, callback) {
-    const [ command, ...rest ] = words(input, /[^, ]+/g) // no idea the
-															// second param.
-															// played with repel
-															// on lodash and it
-															// works so fuck it
+    const [ command, ...rest ] = words(input, /[^, ]+/g) // no idea the second param. played with 
+															// repel on lodash and it works so f%%% it
+															
     const contents = rest.join(' ')
 
-    let cmd = command // command is readonly?
-         	
+    let cmd = command // command is readonly? did this for something.
+                      // not needed now
     
     if (cmd === 'disconnect') {
     	prevCmd = command;
@@ -116,11 +110,8 @@ cli
 
     else if(prevCmd != undefined)
     {
-    	
-    	// //////////////////////////////
+    	//2 hours... check commit
     	const newContents = command + ' ' + contents
-    	// ///////////////////////////////
-    	
     	
     	  if (prevCmd === 'echo') {
             server.write(new Message({ username, command:prevCmd, contents:newContents }).toJSON() + '\n')
@@ -138,8 +129,7 @@ cli
     } // inner if/elseIf
     
     else {
-      this.log(`Command <${command}> was not recognized`)
-      // cli.chalk['green']
+      cli.log(cli.chalk.bold.red('Command <' + command + '> was not recognized'))  
     }
     
 
